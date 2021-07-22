@@ -7,12 +7,12 @@ public  class Documentador implements MySqlParserListener {
     public ParseTreeWalker walker = new ParseTreeWalker();
     @Override
     public void enterRoot(MySqlParser.RootContext ctx) {
-
+        System.out.println("***********DOCUMENTACIÓN************");
     }
 
     @Override
     public void exitRoot(MySqlParser.RootContext ctx) {
-
+        System.out.println("documentacion hecha por.....");
     }
 
     @Override
@@ -127,7 +127,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateDatabase(MySqlParser.CreateDatabaseContext ctx) {
-
+        System.out.print("SE CREA LA BASE DE DATOS CON NOMBRE:");
+        walker.walk(new Documentador(), ctx.getChild(2));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
