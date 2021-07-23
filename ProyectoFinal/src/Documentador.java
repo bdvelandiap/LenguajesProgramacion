@@ -4909,7 +4909,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterIfNotExists(MySqlParser.IfNotExistsContext ctx) {
-
+        System.out.print("(si no existe)");
     }
 
     @Override
