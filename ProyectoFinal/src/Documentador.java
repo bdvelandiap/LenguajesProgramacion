@@ -137,7 +137,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void exitCreateDatabase(MySqlParser.CreateDatabaseContext ctx) {
-
+        System.out.println();
     }
 
     @Override
@@ -152,12 +152,19 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateIndex(MySqlParser.CreateIndexContext ctx) {
-
+        System.out.print("SE AÑADE EL INDEX-> ");
+        walker.walk(new Documentador(), ctx.getChild(2));
+        System.out.print(" A LA TABLA-> ");
+        walker.walk(new Documentador(), ctx.getChild(4));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
     public void exitCreateIndex(MySqlParser.CreateIndexContext ctx) {
-
+        System.out.println();
     }
 
     @Override
@@ -232,7 +239,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void exitColumnCreateTable(MySqlParser.ColumnCreateTableContext ctx) {
-
+        System.out.println();
     }
 
     @Override
@@ -4547,7 +4554,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSimpleId(MySqlParser.SimpleIdContext ctx) {
-        System.out.println(ctx.getChild(0));
+        System.out.print(ctx.getChild(0));
         walker.walk(new Documentador(), ctx.getChild(0));
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
