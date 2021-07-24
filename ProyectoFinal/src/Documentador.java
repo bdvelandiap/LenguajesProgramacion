@@ -289,7 +289,26 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateTrigger(MySqlParser.CreateTriggerContext ctx) {
+        System.out.print("SE CREA EL DISPARADOR CON NOMBRE: ");
+        walker.walk(new Documentador(), ctx.fullId(0));
+        //------TRIGGER TIME------
+        if(ctx.getChild(3).toString().equals("BEFORE")){
+            System.out.print("(se activa antes ");
+        }else {System.out.print("(se activa despues ");}
+        //-----TRIGGER EVENT--------
+        if(ctx.getChild(4).toString().equals("INSERT")){
+            System.out.print("de insertar)");
+        }else if (ctx.getChild(4).toString().equals("UPDATE")){
+            System.out.print("de actualizar)");
+        }else{System.out.print("de borrar)"); }
+        //-----------------------
+        System.out.print(",EN LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
 
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
