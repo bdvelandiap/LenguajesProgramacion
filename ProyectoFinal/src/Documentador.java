@@ -135,7 +135,10 @@ public  class Documentador implements MySqlParserListener {
     @Override
     public void enterCreateDatabase(MySqlParser.CreateDatabaseContext ctx) {
         System.out.print("SE CREA LA BASE DE DATOS CON NOMBRE:");
-        walker.walk(new Documentador(), ctx.getChild(2));
+        if(ctx.ifNotExists()!=null){
+            walker.walk(new Documentador(), ctx.ifNotExists());
+        }
+        walker.walk(new Documentador(), ctx.uid());
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
@@ -1916,7 +1919,15 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropDatabase(MySqlParser.DropDatabaseContext ctx) {
-
+        System.out.print("SE BORRA LA BASE DE DATOS CON NOMBRE:");
+        if(ctx.ifExists()!=null){
+            walker.walk(new Documentador(), ctx.ifExists());
+        }
+        walker.walk(new Documentador(), ctx.uid());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -4991,7 +5002,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterIfExists(MySqlParser.IfExistsContext ctx) {
-
+        System.out.print("(si existe)");
     }
 
     @Override
