@@ -30,16 +30,16 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSqlStatement(MySqlParser.SqlStatementContext ctx) {
-        int a = ctx.start.getStartIndex();
+        /*int a = ctx.start.getStartIndex();
         int b = ctx.stop.getStopIndex();
         Interval interval = new Interval(a,b);
         String viewSql = ctx.start.getInputStream().getText(interval);
-        System.out.print("["+viewSql+"]--->");
+        System.out.print("["+viewSql+"]--->");*/
     }
 
     @Override
     public void exitSqlStatement(MySqlParser.SqlStatementContext ctx) {
-
+        System.out.println();
     }
 
     @Override
@@ -144,7 +144,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void exitCreateDatabase(MySqlParser.CreateDatabaseContext ctx) {
-        System.out.println();
+
     }
 
     @Override
@@ -159,10 +159,15 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateIndex(MySqlParser.CreateIndexContext ctx) {
-        System.out.print("SE AÑADE EL INDEX: ");
-        walker.walk(new Documentador(), ctx.getChild(2));
-        System.out.print(" A LA TABLA: ");
-        walker.walk(new Documentador(), ctx.getChild(4));
+        System.out.print("SE AÑADE EL INDICE: ");
+        if(!ctx.getChild(1).getText().equals("INDEX")){
+            System.out.print("(de tipo "+ctx.getChild(1).getText()+") ");
+        }
+        walker.walk(new Documentador(), ctx.uid());
+        System.out.print(",A LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
+        System.out.print(",EN :");
+        System.out.print(ctx.indexColumnNames().getText());
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
@@ -186,6 +191,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateProcedure(MySqlParser.CreateProcedureContext ctx) {
+        /*System.out.print("SE CREAL EL PROCESO: ");
+        walker.walk(new Documentador(), ctx.fullId());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }*/
 
     }
 
@@ -206,7 +217,14 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateServer(MySqlParser.CreateServerContext ctx) {
-
+        System.out.print("SE CREA EL SERVIDOR CON NOMBRE: ");
+        walker.walk(new Documentador(), ctx.uid());
+        System.out.print(",CON IDENTIFICADOR: ");
+        System.out.print(ctx.getChild(6).getText()) ;
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
