@@ -7,12 +7,30 @@ public  class Documentador implements MySqlParserListener {
     public ParseTreeWalker walker = new ParseTreeWalker();
     @Override
     public void enterRoot(MySqlParser.RootContext ctx) {
-        System.out.println("***********DOCUMENTACIÓN************");
+        System.out.println("***********DOCUMENTACIÓN GENERAL************\n");
+        int tablas = 0;
+        for(int i=0; i<ctx.getChild(0).getChildCount(); i++){
+            try{
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[687 669 646 638]")){
+                    tablas++;
+                }
+            }catch(Exception e){
+
+            }
+        }
+        if(tablas > 0){
+            if(tablas == 1){
+                System.out.println("SE CREA UN TOTAL DE 1 TABLA");
+            }else{
+                System.out.println("SE CREAN UN TOTAL DE "+tablas+" TABLAS");
+            }
+        }
+        System.out.println("\n***********DOCUMENTACIÓN DETALLADA************\n");
     }
 
     @Override
     public void exitRoot(MySqlParser.RootContext ctx) {
-        System.out.println("documentacion hecha por.....");
+        System.out.println("\ndocumentacion hecha por.....");
     }
 
     @Override
