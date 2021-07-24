@@ -318,7 +318,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateView(MySqlParser.CreateViewContext ctx) {
-
+        System.out.print("CREA LA VISTA CON NOMBRE: ");
+        walker.walk(new Documentador(), ctx.fullId());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
