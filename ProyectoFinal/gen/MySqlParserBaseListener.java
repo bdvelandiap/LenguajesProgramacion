@@ -1,4 +1,4 @@
-// Generated from C:/Users/ASUS/IdeaProjects/ProyectoFinal/grammar\MySqlParser.g4 by ANTLR 4.9.1
+// Generated from C:/Users/Cesar David Pineda O/Documents/GitHub/LenguajesProgramacion/ProyectoFinal/grammar\MySqlParser.g4 by ANTLR 4.9.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;

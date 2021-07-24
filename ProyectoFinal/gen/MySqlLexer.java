@@ -1,4 +1,4 @@
-// Generated from C:/Users/ASUS/IdeaProjects/ProyectoFinal/grammar\MySqlLexer.g4 by ANTLR 4.9.1
+// Generated from C:/Users/Cesar David Pineda O/Documents/GitHub/LenguajesProgramacion/ProyectoFinal/grammar\MySqlLexer.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

@@ -6,8 +6,9 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public  class Documentador implements MySqlParserListener {
+public class Documentador implements MySqlParserListener {
     public ParseTreeWalker walker = new ParseTreeWalker();
+
     @Override
     public void enterRoot(MySqlParser.RootContext ctx) {
         System.out.println("***********DOCUMENTACIÓN************");
@@ -2143,8 +2144,9 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterInsertStatement(MySqlParser.InsertStatementContext ctx) {
-
+        
     }
+
 
     @Override
     public void exitInsertStatement(MySqlParser.InsertStatementContext ctx) {
