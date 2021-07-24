@@ -1947,7 +1947,14 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropIndex(MySqlParser.DropIndexContext ctx) {
-
+        System.out.print("SE BORRA EL INDEX CON NOMBRE:");
+        walker.walk(new Documentador(), ctx.uid());
+        System.out.print(",EN LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -1987,7 +1994,15 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropServer(MySqlParser.DropServerContext ctx) {
-
+        System.out.print("SE BORRA EL SERVIDOR CON NOMBRE:");
+        if(ctx.ifExists()!=null){
+            walker.walk(new Documentador(), ctx.ifExists());
+        }
+        walker.walk(new Documentador(), ctx.uid());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2017,7 +2032,15 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropTrigger(MySqlParser.DropTriggerContext ctx) {
-
+        System.out.print("SE BORRA EL DISPARADOR CON NOMBRE:");
+        if(ctx.ifExists()!=null){
+            walker.walk(new Documentador(), ctx.ifExists());
+        }
+        walker.walk(new Documentador(), ctx.fullId());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2027,7 +2050,20 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropView(MySqlParser.DropViewContext ctx) {
-
+        System.out.print("SE BORRA(N) LA(S) VISTA(s) CON NOMBRE(S):");
+        if(ctx.ifExists()!=null){
+            walker.walk(new Documentador(), ctx.ifExists());
+        }
+        for(int j =0;j<ctx.fullId().size();j++) {
+            walker.walk(new Documentador(), ctx.fullId(j));
+            if(j<ctx.fullId().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
