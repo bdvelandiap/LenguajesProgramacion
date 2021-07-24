@@ -2513,7 +2513,13 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterQuerySpecification(MySqlParser.QuerySpecificationContext ctx) {
-
+        System.out.print("SE MUESTRAN :");
+        walker.walk(new Documentador(), ctx.selectElements());
+        walker.walk(new Documentador(), ctx.getChild(2));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2563,7 +2569,21 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
-
+        if(ctx.STAR()!=null){
+            System.out.print(" *(todos) los elementos ");
+        }
+        if(ctx.selectElement().size()>1){
+            for(int j =0;j<ctx.selectElement().size();j++) {
+                walker.walk(new Documentador(), ctx.selectElement(j));
+                if(j<ctx.selectElement().size()-1){
+                    System.out.print(",");
+                }
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2573,7 +2593,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
-
+        System.out.print(" (*)todos los elementos ");
     }
 
     @Override
@@ -2583,6 +2603,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
+        System.out.print("(columna)");
 
     }
 
@@ -2663,7 +2684,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterFromClause(MySqlParser.FromClauseContext ctx) {
-
+        System.out.print(", DE :");
+        walker.walk(new Documentador(), ctx.tableSources());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
