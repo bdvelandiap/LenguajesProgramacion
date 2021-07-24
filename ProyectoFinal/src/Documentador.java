@@ -221,6 +221,13 @@ public  class Documentador implements MySqlParserListener {
         walker.walk(new Documentador(), ctx.uid());
         System.out.print(",CON IDENTIFICADOR: ");
         System.out.print(ctx.getChild(6).getText()) ;
+        System.out.print(",OPCIONES:( ");
+        for(int j =0;j<ctx.serverOption().size();j++) {
+            walker.walk(new Documentador(), ctx.serverOption(j));
+            if(j<ctx.serverOption().size()-1){
+                System.out.print(",");
+            }
+        }
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
@@ -229,7 +236,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void exitCreateServer(MySqlParser.CreateServerContext ctx) {
-
+        System.out.print(")");
     }
 
     @Override
@@ -503,7 +510,26 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterServerOption(MySqlParser.ServerOptionContext ctx) {
-
+        switch (ctx.getChild(0).toString()) {
+            case "HOST":
+                System.out.print("host: " + ctx.getChild(1).toString());
+                break;
+            case "DATABASE":
+                System.out.print("database: " + ctx.getChild(1).toString());
+                break;
+            case "USER":
+                System.out.print("user: " + ctx.getChild(1).toString());
+                break;
+            case "SOCKET":
+                System.out.print("socket: " + ctx.getChild(1).toString());
+                break;
+            case "OWNER":
+                System.out.print("owner: " + ctx.getChild(1).toString());
+                break;
+            case "PORT":
+                System.out.print("port: " + ctx.getChild(1).toString());
+                break;
+        }
     }
 
     @Override
@@ -1368,12 +1394,24 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterAlterServer(MySqlParser.AlterServerContext ctx) {
-
+        System.out.print("SE ALTERA EL SERVIDOR CON NOMBRE:");
+        walker.walk(new Documentador(), ctx.getChild(2));
+        System.out.print(",OPCIONES:( ");
+        for(int j =0;j<ctx.serverOption().size();j++) {
+            walker.walk(new Documentador(), ctx.serverOption(j));
+            if(j<ctx.serverOption().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
     public void exitAlterServer(MySqlParser.AlterServerContext ctx) {
-
+        System.out.print(")");
     }
 
     @Override
