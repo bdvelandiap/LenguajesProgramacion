@@ -1293,7 +1293,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterAlterSimpleDatabase(MySqlParser.AlterSimpleDatabaseContext ctx) {
-
+        System.out.print("SE ALTERA LA BASE DE DATOS CON NOMBRE:");
+        walker.walk(new Documentador(), ctx.getChild(2));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
