@@ -1,4 +1,7 @@
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -45,7 +48,11 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSqlStatement(MySqlParser.SqlStatementContext ctx) {
-
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
+        String viewSql = ctx.start.getInputStream().getText(interval);
+        System.out.print("["+viewSql+"]--->");
     }
 
     @Override
@@ -170,9 +177,9 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateIndex(MySqlParser.CreateIndexContext ctx) {
-        System.out.print("SE AÑADE EL INDEX-> ");
+        System.out.print("SE AÑADE EL INDEX: ");
         walker.walk(new Documentador(), ctx.getChild(2));
-        System.out.print(" A LA TABLA-> ");
+        System.out.print(" A LA TABLA: ");
         walker.walk(new Documentador(), ctx.getChild(4));
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
@@ -4927,7 +4934,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterIfNotExists(MySqlParser.IfNotExistsContext ctx) {
-
+        System.out.print("(si no existe)");
     }
 
     @Override
