@@ -2347,7 +2347,18 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSingleDeleteStatement(MySqlParser.SingleDeleteStatementContext ctx) {
-
+        System.out.print("SE BORRA ");
+        if(ctx.LOW_PRIORITY()!=null){
+            System.out.print("(se cuando no se este leyendo)");
+        }
+        System.out.print("DE LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
+        System.out.print(" DONDE ");
+        walker.walk(new Documentador(), ctx.expression());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -5523,7 +5534,13 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterBinaryComparisonPredicate(MySqlParser.BinaryComparisonPredicateContext ctx) {
-
+        System.out.print(ctx.predicate(0).getText());
+        walker.walk(new Documentador(), ctx.comparisonOperator());
+        walker.walk(new Documentador(), ctx.predicate(1));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -5749,7 +5766,29 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterComparisonOperator(MySqlParser.ComparisonOperatorContext ctx) {
-
+        switch (ctx.getText()) {
+            case "=":
+                System.out.print(" (=)igual a ");
+                break;
+            case ">":
+                System.out.print(" (>)mayor a ");
+                break;
+            case "<":
+                System.out.print(" (<)menor a ");
+                break;
+            case "<=":
+                System.out.print(" (<=)menor o igual a ");
+                break;
+            case ">=":
+                System.out.print(" (>=)mayor o igual a ");
+                break;
+            case "!=":
+                System.out.print(" (!=)diferente a ");
+                break;
+            case "<=>":
+                System.out.print(" (<=>)no es distinto a ");
+                break;
+        }
     }
 
     @Override
