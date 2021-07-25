@@ -2230,7 +2230,17 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterLoadXmlStatement(MySqlParser.LoadXmlStatementContext ctx) {
-
+        System.out.print("SE CARGA EL ARCHIVO XML:");
+        if(ctx.LOW_PRIORITY()!=null){
+            System.out.print("( cuando no se este leyendo)");
+        }
+        System.out.print(ctx.STRING_LITERAL().toString());
+        System.out.print(",EN LA TABLA:");
+        walker.walk(new Documentador(), ctx.tableName());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
