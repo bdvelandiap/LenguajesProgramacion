@@ -2243,12 +2243,19 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUpdatedElement(MySqlParser.UpdatedElementContext ctx) {
-
+        System.out.print("(");
+        walker.walk(new Documentador(), ctx.fullColumnName());
+        System.out.print("(=)ahora es ");
+        walker.walk(new Documentador(), ctx.expression());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
     public void exitUpdatedElement(MySqlParser.UpdatedElementContext ctx) {
-
+        System.out.print(")");
     }
 
     @Override
@@ -2333,7 +2340,23 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSingleUpdateStatement(MySqlParser.SingleUpdateStatementContext ctx) {
-
+        System.out.print("SE ACTUALIZA ");
+        if(ctx.LOW_PRIORITY()!=null){
+            System.out.print("(se cuando no se este leyendo)");
+        }
+        System.out.print("LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
+        System.out.print(", DONDE: ");
+        for(int j =0;j<ctx.updatedElement().size();j++) {
+            walker.walk(new Documentador(), ctx.updatedElement(j));
+            if(j<ctx.updatedElement().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -5364,7 +5387,6 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterNotExpression(MySqlParser.NotExpressionContext ctx) {
-
     }
 
     @Override
@@ -5544,7 +5566,13 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterMathExpressionAtom(MySqlParser.MathExpressionAtomContext ctx) {
-
+        walker.walk(new Documentador(), ctx.expressionAtom(0));
+        walker.walk(new Documentador(), ctx.mathOperator());
+        walker.walk(new Documentador(), ctx.expressionAtom(1));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -5594,7 +5622,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterConstantExpressionAtom(MySqlParser.ConstantExpressionAtomContext ctx) {
-
+        System.out.print(ctx.getText());
     }
 
     @Override
@@ -5684,7 +5712,23 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterMathOperator(MySqlParser.MathOperatorContext ctx) {
-
+        switch (ctx.getText()) {
+            case "+":
+                System.out.print(" (+)mas ");
+                break;
+            case "-":
+                System.out.print(" (-)menos ");
+                break;
+            case "*":
+                System.out.print(" (*)multiplicado por ");
+                break;
+            case "/":
+                System.out.print(" (/)dividido por ");
+                break;
+            case "%":
+                System.out.print(" (%)modulo ");
+                break;
+        }
     }
 
     @Override
