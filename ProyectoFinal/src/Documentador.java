@@ -2190,7 +2190,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDoStatement(MySqlParser.DoStatementContext ctx) {
-
+        System.out.print("SE HACE: ");
     }
 
     @Override
@@ -5085,7 +5085,16 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterExpressions(MySqlParser.ExpressionsContext ctx) {
-
+        for(int i=0;i<ctx.expression().size();i++){
+            walker.walk(new Documentador(), ctx.expression(i));
+            if(i<ctx.expression().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
