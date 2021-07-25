@@ -48,16 +48,16 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSqlStatement(MySqlParser.SqlStatementContext ctx) {
-        int a = ctx.start.getStartIndex();
+        /*int a = ctx.start.getStartIndex();
         int b = ctx.stop.getStopIndex();
         Interval interval = new Interval(a,b);
         String viewSql = ctx.start.getInputStream().getText(interval);
-        System.out.print("["+viewSql+"]--->");
+        System.out.print("["+viewSql+"]--->");*/
     }
 
     @Override
     public void exitSqlStatement(MySqlParser.SqlStatementContext ctx) {
-
+        System.out.println();
     }
 
     @Override
@@ -153,7 +153,10 @@ public  class Documentador implements MySqlParserListener {
     @Override
     public void enterCreateDatabase(MySqlParser.CreateDatabaseContext ctx) {
         System.out.print("SE CREA LA BASE DE DATOS CON NOMBRE:");
-        walker.walk(new Documentador(), ctx.getChild(2));
+        if(ctx.ifNotExists()!=null){
+            walker.walk(new Documentador(), ctx.ifNotExists());
+        }
+        walker.walk(new Documentador(), ctx.uid());
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
@@ -162,7 +165,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void exitCreateDatabase(MySqlParser.CreateDatabaseContext ctx) {
-        System.out.println();
+
     }
 
     @Override
@@ -177,10 +180,15 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateIndex(MySqlParser.CreateIndexContext ctx) {
-        System.out.print("SE AÑADE EL INDEX: ");
-        walker.walk(new Documentador(), ctx.getChild(2));
-        System.out.print(" A LA TABLA: ");
-        walker.walk(new Documentador(), ctx.getChild(4));
+        System.out.print("SE AÑADE EL INDICE: ");
+        if(!ctx.getChild(1).getText().equals("INDEX")){
+            System.out.print("(de tipo "+ctx.getChild(1).getText()+") ");
+        }
+        walker.walk(new Documentador(), ctx.uid());
+        System.out.print(",A LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
+        System.out.print(",EN :");
+        System.out.print(ctx.indexColumnNames().getText());
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
@@ -204,6 +212,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateProcedure(MySqlParser.CreateProcedureContext ctx) {
+        /*System.out.print("SE CREAL EL PROCESO: ");
+        walker.walk(new Documentador(), ctx.fullId());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }*/
 
     }
 
@@ -224,12 +238,26 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateServer(MySqlParser.CreateServerContext ctx) {
-
+        System.out.print("SE CREA EL SERVIDOR CON NOMBRE: ");
+        walker.walk(new Documentador(), ctx.uid());
+        System.out.print(",CON IDENTIFICADOR: ");
+        System.out.print(ctx.getChild(6).getText()) ;
+        System.out.print(",OPCIONES:( ");
+        for(int j =0;j<ctx.serverOption().size();j++) {
+            walker.walk(new Documentador(), ctx.serverOption(j));
+            if(j<ctx.serverOption().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
     public void exitCreateServer(MySqlParser.CreateServerContext ctx) {
-
+        System.out.print(")");
     }
 
     @Override
@@ -289,7 +317,26 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateTrigger(MySqlParser.CreateTriggerContext ctx) {
+        System.out.print("SE CREA EL DISPARADOR CON NOMBRE: ");
+        walker.walk(new Documentador(), ctx.fullId(0));
+        //------TRIGGER TIME------
+        if(ctx.getChild(3).toString().equals("BEFORE")){
+            System.out.print("(se activa antes ");
+        }else {System.out.print("(se activa despues ");}
+        //-----TRIGGER EVENT--------
+        if(ctx.getChild(4).toString().equals("INSERT")){
+            System.out.print("de insertar)");
+        }else if (ctx.getChild(4).toString().equals("UPDATE")){
+            System.out.print("de actualizar)");
+        }else{System.out.print("de borrar)"); }
+        //-----------------------
+        System.out.print(",EN LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
 
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -299,7 +346,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateView(MySqlParser.CreateViewContext ctx) {
-
+        System.out.print("CREA LA VISTA CON NOMBRE: ");
+        walker.walk(new Documentador(), ctx.fullId());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -479,7 +531,26 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterServerOption(MySqlParser.ServerOptionContext ctx) {
-
+        switch (ctx.getChild(0).toString()) {
+            case "HOST":
+                System.out.print("host: " + ctx.getChild(1).toString());
+                break;
+            case "DATABASE":
+                System.out.print("database: " + ctx.getChild(1).toString());
+                break;
+            case "USER":
+                System.out.print("user: " + ctx.getChild(1).toString());
+                break;
+            case "SOCKET":
+                System.out.print("socket: " + ctx.getChild(1).toString());
+                break;
+            case "OWNER":
+                System.out.print("owner: " + ctx.getChild(1).toString());
+                break;
+            case "PORT":
+                System.out.print("port: " + ctx.getChild(1).toString());
+                break;
+        }
     }
 
     @Override
@@ -1269,7 +1340,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterAlterSimpleDatabase(MySqlParser.AlterSimpleDatabaseContext ctx) {
-
+        System.out.print("SE ALTERA LA BASE DE DATOS CON NOMBRE:");
+        walker.walk(new Documentador(), ctx.getChild(2));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -1339,12 +1415,24 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterAlterServer(MySqlParser.AlterServerContext ctx) {
-
+        System.out.print("SE ALTERA EL SERVIDOR CON NOMBRE:");
+        walker.walk(new Documentador(), ctx.getChild(2));
+        System.out.print(",OPCIONES:( ");
+        for(int j =0;j<ctx.serverOption().size();j++) {
+            walker.walk(new Documentador(), ctx.serverOption(j));
+            if(j<ctx.serverOption().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
     public void exitAlterServer(MySqlParser.AlterServerContext ctx) {
-
+        System.out.print(")");
     }
 
     @Override
@@ -1849,7 +1937,15 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropDatabase(MySqlParser.DropDatabaseContext ctx) {
-
+        System.out.print("SE BORRA LA BASE DE DATOS CON NOMBRE:");
+        if(ctx.ifExists()!=null){
+            walker.walk(new Documentador(), ctx.ifExists());
+        }
+        walker.walk(new Documentador(), ctx.uid());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -1869,7 +1965,14 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropIndex(MySqlParser.DropIndexContext ctx) {
-
+        System.out.print("SE BORRA EL INDEX CON NOMBRE:");
+        walker.walk(new Documentador(), ctx.uid());
+        System.out.print(",EN LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -1909,7 +2012,15 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropServer(MySqlParser.DropServerContext ctx) {
-
+        System.out.print("SE BORRA EL SERVIDOR CON NOMBRE:");
+        if(ctx.ifExists()!=null){
+            walker.walk(new Documentador(), ctx.ifExists());
+        }
+        walker.walk(new Documentador(), ctx.uid());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -1939,7 +2050,15 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropTrigger(MySqlParser.DropTriggerContext ctx) {
-
+        System.out.print("SE BORRA EL DISPARADOR CON NOMBRE:");
+        if(ctx.ifExists()!=null){
+            walker.walk(new Documentador(), ctx.ifExists());
+        }
+        walker.walk(new Documentador(), ctx.fullId());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -1949,7 +2068,20 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropView(MySqlParser.DropViewContext ctx) {
-
+        System.out.print("SE BORRA(N) LA(S) VISTA(s) CON NOMBRE(S):");
+        if(ctx.ifExists()!=null){
+            walker.walk(new Documentador(), ctx.ifExists());
+        }
+        for(int j =0;j<ctx.fullId().size();j++) {
+            walker.walk(new Documentador(), ctx.fullId(j));
+            if(j<ctx.fullId().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2129,12 +2261,19 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUpdatedElement(MySqlParser.UpdatedElementContext ctx) {
-
+        System.out.print("(");
+        walker.walk(new Documentador(), ctx.fullColumnName());
+        System.out.print("(=)ahora es ");
+        walker.walk(new Documentador(), ctx.expression());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
     public void exitUpdatedElement(MySqlParser.UpdatedElementContext ctx) {
-
+        System.out.print(")");
     }
 
     @Override
@@ -2219,7 +2358,23 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSingleUpdateStatement(MySqlParser.SingleUpdateStatementContext ctx) {
-
+        System.out.print("SE ACTUALIZA ");
+        if(ctx.LOW_PRIORITY()!=null){
+            System.out.print("(se cuando no se este leyendo)");
+        }
+        System.out.print("LA TABLA: ");
+        walker.walk(new Documentador(), ctx.tableName());
+        System.out.print(", DONDE: ");
+        for(int j =0;j<ctx.updatedElement().size();j++) {
+            walker.walk(new Documentador(), ctx.updatedElement(j));
+            if(j<ctx.updatedElement().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2399,7 +2554,13 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterQuerySpecification(MySqlParser.QuerySpecificationContext ctx) {
-
+        System.out.print("SE MUESTRAN :");
+        walker.walk(new Documentador(), ctx.selectElements());
+        walker.walk(new Documentador(), ctx.getChild(2));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2449,7 +2610,21 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
-
+        if(ctx.STAR()!=null){
+            System.out.print(" *(todos) los elementos ");
+        }
+        if(ctx.selectElement().size()>1){
+            for(int j =0;j<ctx.selectElement().size();j++) {
+                walker.walk(new Documentador(), ctx.selectElement(j));
+                if(j<ctx.selectElement().size()-1){
+                    System.out.print(",");
+                }
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2459,7 +2634,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
-
+        System.out.print(" (*)todos los elementos ");
     }
 
     @Override
@@ -2469,6 +2644,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
+        System.out.print("(columna)");
 
     }
 
@@ -2549,7 +2725,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterFromClause(MySqlParser.FromClauseContext ctx) {
-
+        System.out.print(", DE :");
+        walker.walk(new Documentador(), ctx.tableSources());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -4924,7 +5105,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterIfExists(MySqlParser.IfExistsContext ctx) {
-
+        System.out.print("(si existe)");
     }
 
     @Override
@@ -5224,7 +5405,6 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterNotExpression(MySqlParser.NotExpressionContext ctx) {
-
     }
 
     @Override
@@ -5404,7 +5584,13 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterMathExpressionAtom(MySqlParser.MathExpressionAtomContext ctx) {
-
+        walker.walk(new Documentador(), ctx.expressionAtom(0));
+        walker.walk(new Documentador(), ctx.mathOperator());
+        walker.walk(new Documentador(), ctx.expressionAtom(1));
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -5454,7 +5640,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterConstantExpressionAtom(MySqlParser.ConstantExpressionAtomContext ctx) {
-
+        System.out.print(ctx.getText());
     }
 
     @Override
@@ -5544,7 +5730,23 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterMathOperator(MySqlParser.MathOperatorContext ctx) {
-
+        switch (ctx.getText()) {
+            case "+":
+                System.out.print(" (+)mas ");
+                break;
+            case "-":
+                System.out.print(" (-)menos ");
+                break;
+            case "*":
+                System.out.print(" (*)multiplicado por ");
+                break;
+            case "/":
+                System.out.print(" (/)dividido por ");
+                break;
+            case "%":
+                System.out.print(" (%)modulo ");
+                break;
+        }
     }
 
     @Override
