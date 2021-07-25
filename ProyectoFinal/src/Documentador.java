@@ -12,13 +12,41 @@ public  class Documentador implements MySqlParserListener {
     public void enterRoot(MySqlParser.RootContext ctx) {
         System.out.println("***********DOCUMENTACIÓN GENERAL************\n");
         int tablas = 0;
+        int dbs = 0;
+        int drop_table = 0;
+        int selects = 0;
+        int inserts = 0;
         for(int i=0; i<ctx.getChild(0).getChildCount(); i++){
             try{
+                //System.out.println(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString());
                 if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[687 669 646 638]")){
                     tablas++;
                 }
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[709 669 646 638]")){
+                    drop_table++;
+                }
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[680 669 646 638]")){
+                    dbs++;
+                }
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[717 670 659 638]")
+                || ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[717 670 646 638]")
+                ){
+                    selects++;
+                }
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[718 670 659 638]")
+                ||ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[718 670 646 638]")
+                ){
+                    inserts++;
+                }
             }catch(Exception e){
 
+            }
+        }
+        if(dbs > 0){
+            if(dbs == 1){
+                System.out.println("SE CREA UN TOTAL DE 1 BASE DE DATOS");
+            }else{
+                System.out.println("SE CREAN UN TOTAL DE "+dbs+" BASES DE DATOS");
             }
         }
         if(tablas > 0){
@@ -26,6 +54,27 @@ public  class Documentador implements MySqlParserListener {
                 System.out.println("SE CREA UN TOTAL DE 1 TABLA");
             }else{
                 System.out.println("SE CREAN UN TOTAL DE "+tablas+" TABLAS");
+            }
+        }
+        if(drop_table > 0){
+            if(drop_table == 1){
+                System.out.println("SE HACE 1 DROP TABLE");
+            }else{
+                System.out.println("SE HACEN UN TOTAL DE "+drop_table+" DROP TABLES");
+            }
+        }
+        if(selects > 0){
+            if(selects == 1){
+                System.out.println("SE HACE 1 CONSULTA");
+            }else{
+                System.out.println("SE HACEN UN TOTAL DE "+selects+" CONSULTAS");
+            }
+        }
+        if(inserts > 0){
+            if(inserts == 1){
+                System.out.println("SE HACE 1 INSERT");
+            }else{
+                System.out.println("SE HACEN UN TOTAL DE "+inserts+" INSERTS");
             }
         }
         System.out.println("\n***********DOCUMENTACIÓN DETALLADA************\n");
