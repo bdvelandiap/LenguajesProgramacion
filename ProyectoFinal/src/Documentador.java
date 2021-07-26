@@ -2203,7 +2203,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDoStatement(MySqlParser.DoStatementContext ctx) {
-
+        System.out.print("SE HACE: ");
     }
 
     @Override
@@ -2243,7 +2243,25 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterLoadXmlStatement(MySqlParser.LoadXmlStatementContext ctx) {
-
+        System.out.print("SE CARGA EL ARCHIVO XML:");
+        if(ctx.LOW_PRIORITY()!=null){
+            System.out.print("( cuando no se este leyendo)");
+        }
+        System.out.print(ctx.STRING_LITERAL().toString());
+        System.out.print(",EN LA TABLA:");
+        walker.walk(new Documentador(), ctx.tableName());
+        if(ctx.IGNORE(1)!=null){
+            System.out.print("(se ignoran "+ctx.decimalLiteral().getText());
+            if(ctx.LINES()!=null){
+                System.out.print(" lineas)");
+            }else{
+                System.out.print(" columnas)");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2567,6 +2585,22 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterInnerJoin(MySqlParser.InnerJoinContext ctx) {
+        if(ctx.INNER()!=null){
+            System.out.print(" union interna ");
+        }else if(ctx.CROSS()!=null){
+            System.out.print(" union cruzada ");
+        }else {
+            System.out.print(" union  ");
+        }
+        walker.walk(new Documentador(), ctx.tableSourceItem());
+        if(ctx.ON()!=null) {
+            System.out.print(", donde: ");
+        }
+        walker.walk(new Documentador(), ctx.expression());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
 
     }
 
@@ -2578,6 +2612,7 @@ public  class Documentador implements MySqlParserListener {
     @Override
     public void enterStraightJoin(MySqlParser.StraightJoinContext ctx) {
 
+        System.out.print(" union recta ");
     }
 
     @Override
@@ -2587,7 +2622,13 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterOuterJoin(MySqlParser.OuterJoinContext ctx) {
-
+        if(ctx.LEFT()!=null){
+            System.out.print(" union izquerda externa ");
+        }else if(ctx.RIGHT()!=null){
+            System.out.print(" union derecha externa ");
+        }else{
+            System.out.print(" union externa");
+        }
     }
 
     @Override
@@ -2627,7 +2668,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterQuerySpecification(MySqlParser.QuerySpecificationContext ctx) {
-        System.out.print("SE MUESTRAN :");
+        System.out.print("SE MUESTRA(N) :");
         walker.walk(new Documentador(), ctx.selectElements());
         walker.walk(new Documentador(), ctx.getChild(2));
         int childs = ctx.getChildCount();
@@ -2686,14 +2727,12 @@ public  class Documentador implements MySqlParserListener {
         if(ctx.STAR()!=null){
             System.out.print(" *(todos) los elementos ");
         }
-        if(ctx.selectElement().size()>1){
             for(int j =0;j<ctx.selectElement().size();j++) {
                 walker.walk(new Documentador(), ctx.selectElement(j));
                 if(j<ctx.selectElement().size()-1){
                     System.out.print(",");
                 }
             }
-        }
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
@@ -2718,7 +2757,6 @@ public  class Documentador implements MySqlParserListener {
     @Override
     public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
         System.out.print("(columna)");
-
     }
 
     @Override
@@ -4748,12 +4786,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCharsetName(MySqlParser.CharsetNameContext ctx) {
-
+        System.out.print("( charset ="+ctx.getText());
     }
 
     @Override
     public void exitCharsetName(MySqlParser.CharsetNameContext ctx) {
-
+        System.out.print(")");
     }
 
     @Override
@@ -5098,7 +5136,16 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterExpressions(MySqlParser.ExpressionsContext ctx) {
-
+        for(int i=0;i<ctx.expression().size();i++){
+            walker.walk(new Documentador(), ctx.expression(i));
+            if(i<ctx.expression().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -5549,7 +5596,7 @@ public  class Documentador implements MySqlParserListener {
     public void enterBinaryComparisonPredicate(MySqlParser.BinaryComparisonPredicateContext ctx) {
         System.out.print(ctx.predicate(0).getText());
         walker.walk(new Documentador(), ctx.comparisonOperator());
-        walker.walk(new Documentador(), ctx.predicate(1));
+        System.out.print(ctx.predicate(1).getText());
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
