@@ -3481,6 +3481,18 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterPrepareStatement(MySqlParser.PrepareStatementContext ctx) {
+        System.out.print("SE PREPARA LA SENTENCIA: ");
+        System.out.print(ctx.uid().getText());
+        System.out.print(", DESDE: ");
+        if(ctx.query!=null){
+            System.out.print("(la consulta)"+ctx.query.getText());
+        }else{
+            System.out.print("(la variable)"+ctx.variable.getText());
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
 
     }
 
@@ -3491,7 +3503,16 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterExecuteStatement(MySqlParser.ExecuteStatementContext ctx) {
-
+        System.out.print("SE EJECUTA LAS SENTENCIA: ");
+        System.out.print(ctx.uid().getText());
+        if(ctx.userVariables()!=null){
+            System.out.print(", USANDO LAS VARIABLES:");
+            walker.walk(new Documentador(), ctx.userVariables());
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -3501,7 +3522,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDeallocatePrepare(MySqlParser.DeallocatePrepareContext ctx) {
-
+        System.out.print("SE DESAGSIGNA LA SENTENCIA DE NOMBRE:");
     }
 
     @Override
@@ -5185,7 +5206,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUserVariables(MySqlParser.UserVariablesContext ctx) {
-
+        for(int j =0;j<ctx.LOCAL_ID().size();j++){
+            System.out.print(ctx.LOCAL_ID(j).getText());
+            if(j<ctx.LOCAL_ID().size()-1){
+                System.out.print(",");
+            }
+        }
     }
 
     @Override
