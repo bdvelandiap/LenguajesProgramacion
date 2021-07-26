@@ -87,7 +87,7 @@ public  class Documentador implements MySqlParserListener {
             if(delets == 1){
                 System.out.println("SE HACE 1 DELETE");
             }else{
-                System.out.println("SE HACEN UN TOTAL DE "+delets+" DELETS");
+                System.out.println("SE HACEN UN TOTAL DE "+delets+" DELETES");
             }
         }
         System.out.println("\n***********DOCUMENTACIÓN DETALLADA************\n");
