@@ -3083,7 +3083,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterChangeReplicationFilter(MySqlParser.ChangeReplicationFilterContext ctx) {
-
+        System.out.print("SE CAMBIA EL FILTRO DE REPLICACIÓN");
     }
 
     @Override
@@ -3093,7 +3093,14 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterPurgeBinaryLogs(MySqlParser.PurgeBinaryLogsContext ctx) {
-
+        System.out.print("SE BORRAN LOS LOGS ");
+        if(ctx.fileName!=null){
+            System.out.print("DE: ");
+            System.out.print(ctx.fileName.getText());
+        }else{
+            System.out.print("ANTES DE: ");
+            System.out.print(ctx.timeValue.getText());
+        }
     }
 
     @Override
