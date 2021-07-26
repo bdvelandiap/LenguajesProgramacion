@@ -3061,6 +3061,18 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterChangeMaster(MySqlParser.ChangeMasterContext ctx) {
+        System.out.print("SE CAMBIAN LOS PARAMETROS DEL SERVIDOR REPLICA: (");
+        for(int i =0;i<ctx.masterOption().size();i++){
+            System.out.print(ctx.masterOption(i).getText());
+            if(i<ctx.masterOption().size()-1){
+                System.out.print(",");
+            }
+        }
+        System.out.print(")");
+        if(ctx.channelOption()!=null){
+            System.out.print(", PARA EL CANAL:");
+            System.out.print((ctx.channelOption().getChild(2).getText()));
+        }
 
     }
 
