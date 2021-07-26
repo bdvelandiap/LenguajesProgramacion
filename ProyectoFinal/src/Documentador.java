@@ -16,6 +16,7 @@ public  class Documentador implements MySqlParserListener {
         int drop_table = 0;
         int selects = 0;
         int inserts = 0;
+        int delets = 0;
         for(int i=0; i<ctx.getChild(0).getChildCount(); i++){
             try{
                 //System.out.println(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString());
@@ -34,9 +35,14 @@ public  class Documentador implements MySqlParserListener {
                     selects++;
                 }
                 if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[718 670 659 638]")
-                ||ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[718 670 646 638]")
+                        ||ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[718 670 646 638]")
                 ){
                     inserts++;
+                }
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[720 670 646 638]")
+                        ||ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[720 670 659 638]")
+                ){
+                    delets++;
                 }
             }catch(Exception e){
 
@@ -75,6 +81,13 @@ public  class Documentador implements MySqlParserListener {
                 System.out.println("SE HACE 1 INSERT");
             }else{
                 System.out.println("SE HACEN UN TOTAL DE "+inserts+" INSERTS");
+            }
+        }
+        if(delets > 0){
+            if(delets == 1){
+                System.out.println("SE HACE 1 DELETE");
+            }else{
+                System.out.println("SE HACEN UN TOTAL DE "+delets+" DELETS");
             }
         }
         System.out.println("\n***********DOCUMENTACIÓN DETALLADA************\n");
