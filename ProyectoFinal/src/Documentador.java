@@ -4683,7 +4683,10 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSimpleDescribeStatement(MySqlParser.SimpleDescribeStatementContext ctx) {
-
+        if(ctx.DESCRIBE()!=null){
+            System.out.print("SE MUESTRA INFORMACIÓN DE LA TABLA: ");
+            System.out.print(ctx.tableName().getText());
+        }
     }
 
     @Override
@@ -4703,6 +4706,8 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterHelpStatement(MySqlParser.HelpStatementContext ctx) {
+        System.out.print("SE MUESTRA INFORMACIÓN DEL MANUAL DE:");
+        System.out.print(ctx.STRING_LITERAL().getText());
 
     }
 
@@ -4713,7 +4718,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUseStatement(MySqlParser.UseStatementContext ctx) {
-
+        System.out.print("SE LE INDICA A MYSQL USAR LA BASE DE DATOS: "+ctx.uid().getText()+" PARA LAS SIGUIENTES SENTENCIAS.");
     }
 
     @Override
