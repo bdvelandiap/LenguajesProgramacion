@@ -134,7 +134,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDdlStatement(MySqlParser.DdlStatementContext ctx) {
-
+        System.out.print("[DDL]");
     }
 
     @Override
@@ -144,7 +144,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDmlStatement(MySqlParser.DmlStatementContext ctx) {
-
+        System.out.print("[DML]");
     }
 
     @Override
@@ -154,7 +154,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterTransactionStatement(MySqlParser.TransactionStatementContext ctx) {
-
+        System.out.print("[TRANSACTION]");
     }
 
     @Override
@@ -164,7 +164,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterReplicationStatement(MySqlParser.ReplicationStatementContext ctx) {
-
+        System.out.print("[REPLICATION]");
     }
 
     @Override
@@ -174,7 +174,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterPreparedStatement(MySqlParser.PreparedStatementContext ctx) {
-
+        System.out.print("[PREPARED]");
     }
 
     @Override
@@ -184,7 +184,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCompoundStatement(MySqlParser.CompoundStatementContext ctx) {
-
+        System.out.print("[COMPOUND]");
     }
 
     @Override
@@ -194,7 +194,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterAdministrationStatement(MySqlParser.AdministrationStatementContext ctx) {
-
+        System.out.print("[ADMIN]");
     }
 
     @Override
@@ -204,7 +204,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUtilityStatement(MySqlParser.UtilityStatementContext ctx) {
-
+        System.out.print("[UTILITY]");
     }
 
     @Override
@@ -3061,6 +3061,18 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterChangeMaster(MySqlParser.ChangeMasterContext ctx) {
+        System.out.print("SE CAMBIAN LOS PARAMETROS DEL SERVIDOR REPLICA: (");
+        for(int i =0;i<ctx.masterOption().size();i++){
+            System.out.print(ctx.masterOption(i).getText());
+            if(i<ctx.masterOption().size()-1){
+                System.out.print(",");
+            }
+        }
+        System.out.print(")");
+        if(ctx.channelOption()!=null){
+            System.out.print(", PARA EL CANAL:");
+            System.out.print((ctx.channelOption().getChild(2).getText()));
+        }
 
     }
 
@@ -3071,7 +3083,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterChangeReplicationFilter(MySqlParser.ChangeReplicationFilterContext ctx) {
-
+        System.out.print("SE CAMBIA EL FILTRO DE REPLICACIÓN");
     }
 
     @Override
@@ -3081,7 +3093,14 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterPurgeBinaryLogs(MySqlParser.PurgeBinaryLogsContext ctx) {
-
+        System.out.print("SE BORRAN LOS LOGS ");
+        if(ctx.fileName!=null){
+            System.out.print("DE: ");
+            System.out.print(ctx.fileName.getText());
+        }else{
+            System.out.print("ANTES DE: ");
+            System.out.print(ctx.timeValue.getText());
+        }
     }
 
     @Override
@@ -3091,7 +3110,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterResetMaster(MySqlParser.ResetMasterContext ctx) {
-
+        System.out.print("SE BORRAN TODOS LOSARCHIVOS DE LOGS.");
     }
 
     @Override
@@ -3481,6 +3500,18 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterPrepareStatement(MySqlParser.PrepareStatementContext ctx) {
+        System.out.print("SE PREPARA LA SENTENCIA: ");
+        System.out.print(ctx.uid().getText());
+        System.out.print(", DESDE: ");
+        if(ctx.query!=null){
+            System.out.print("(la consulta)"+ctx.query.getText());
+        }else{
+            System.out.print("(la variable)"+ctx.variable.getText());
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
 
     }
 
@@ -3491,7 +3522,16 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterExecuteStatement(MySqlParser.ExecuteStatementContext ctx) {
-
+        System.out.print("SE EJECUTA LAS SENTENCIA: ");
+        System.out.print(ctx.uid().getText());
+        if(ctx.userVariables()!=null){
+            System.out.print(", USANDO LAS VARIABLES:");
+            walker.walk(new Documentador(), ctx.userVariables());
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -3501,7 +3541,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDeallocatePrepare(MySqlParser.DeallocatePrepareContext ctx) {
-
+        System.out.print("SE DESAGSIGNA LA SENTENCIA DE NOMBRE:");
     }
 
     @Override
@@ -3771,6 +3811,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterAlterUserMysqlV56(MySqlParser.AlterUserMysqlV56Context ctx) {
+        System.out.print("SE ALTERA EL USUARIO:");
 
     }
 
@@ -3791,7 +3832,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateUserMysqlV56(MySqlParser.CreateUserMysqlV56Context ctx) {
-
+        System.out.print("SE CREA EL USUARIO: ");
     }
 
     @Override
@@ -3901,6 +3942,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUserSpecification(MySqlParser.UserSpecificationContext ctx) {
+        System.out.print(ctx.userName().getText());
 
     }
 
@@ -3921,12 +3963,17 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterStringAuthOption(MySqlParser.StringAuthOptionContext ctx) {
+        System.out.print(ctx.userName().getText());
+        System.out.print("CON CONTRASEÑA:");
+        System.out.print(ctx.STRING_LITERAL().getText());
 
     }
 
     @Override
     public void exitStringAuthOption(MySqlParser.StringAuthOptionContext ctx) {
-
+        System.out.print(ctx.userName().getText());
+        System.out.print("CON HASH:");
+        System.out.print(ctx.STRING_LITERAL().getText());
     }
 
     @Override
@@ -3941,7 +3988,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSimpleAuthOption(MySqlParser.SimpleAuthOptionContext ctx) {
-
+        System.out.print(ctx.userName().getText());
     }
 
     @Override
@@ -3971,7 +4018,9 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUserPasswordOption(MySqlParser.UserPasswordOptionContext ctx) {
-
+        if(ctx.expireType.getText().equals("DEFAULT")){
+            System.out.print("defecto");
+        }
     }
 
     @Override
@@ -5185,7 +5234,12 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUserVariables(MySqlParser.UserVariablesContext ctx) {
-
+        for(int j =0;j<ctx.LOCAL_ID().size();j++){
+            System.out.print(ctx.LOCAL_ID(j).getText());
+            if(j<ctx.LOCAL_ID().size()-1){
+                System.out.print(",");
+            }
+        }
     }
 
     @Override
