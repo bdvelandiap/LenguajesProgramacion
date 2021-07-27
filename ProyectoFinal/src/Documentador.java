@@ -134,7 +134,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDdlStatement(MySqlParser.DdlStatementContext ctx) {
-
+        System.out.print("[DDL]");
     }
 
     @Override
@@ -144,7 +144,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDmlStatement(MySqlParser.DmlStatementContext ctx) {
-
+        System.out.print("[DML]");
     }
 
     @Override
@@ -154,7 +154,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterTransactionStatement(MySqlParser.TransactionStatementContext ctx) {
-
+        System.out.print("[TRANSACTION]");
     }
 
     @Override
@@ -164,7 +164,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterReplicationStatement(MySqlParser.ReplicationStatementContext ctx) {
-
+        System.out.print("[REPLICATION]");
     }
 
     @Override
@@ -174,7 +174,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterPreparedStatement(MySqlParser.PreparedStatementContext ctx) {
-
+        System.out.print("[PREPARED]");
     }
 
     @Override
@@ -184,7 +184,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCompoundStatement(MySqlParser.CompoundStatementContext ctx) {
-
+        System.out.print("[COMPOUND]");
     }
 
     @Override
@@ -194,7 +194,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterAdministrationStatement(MySqlParser.AdministrationStatementContext ctx) {
-
+        System.out.print("[ADMIN]");
     }
 
     @Override
@@ -204,7 +204,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUtilityStatement(MySqlParser.UtilityStatementContext ctx) {
-
+        System.out.print("[UTILITY]");
     }
 
     @Override
@@ -3811,6 +3811,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterAlterUserMysqlV56(MySqlParser.AlterUserMysqlV56Context ctx) {
+        System.out.print("SE ALTERA EL USUARIO:");
 
     }
 
@@ -3941,6 +3942,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUserSpecification(MySqlParser.UserSpecificationContext ctx) {
+        System.out.print(ctx.userName().getText());
 
     }
 
@@ -4016,7 +4018,9 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUserPasswordOption(MySqlParser.UserPasswordOptionContext ctx) {
-
+        if(ctx.expireType.getText().equals("DEFAULT")){
+            System.out.print("defecto");
+        }
     }
 
     @Override
