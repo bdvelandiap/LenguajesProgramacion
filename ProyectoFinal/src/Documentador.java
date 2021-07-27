@@ -3110,7 +3110,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterResetMaster(MySqlParser.ResetMasterContext ctx) {
-
+        System.out.print("SE BORRAN TODOS LOSARCHIVOS DE LOGS.");
     }
 
     @Override
@@ -3831,7 +3831,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCreateUserMysqlV56(MySqlParser.CreateUserMysqlV56Context ctx) {
-
+        System.out.print("SE CREA EL USUARIO: ");
     }
 
     @Override
@@ -3961,12 +3961,17 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterStringAuthOption(MySqlParser.StringAuthOptionContext ctx) {
+        System.out.print(ctx.userName().getText());
+        System.out.print("CON CONTRASEÑA:");
+        System.out.print(ctx.STRING_LITERAL().getText());
 
     }
 
     @Override
     public void exitStringAuthOption(MySqlParser.StringAuthOptionContext ctx) {
-
+        System.out.print(ctx.userName().getText());
+        System.out.print("CON HASH:");
+        System.out.print(ctx.STRING_LITERAL().getText());
     }
 
     @Override
@@ -3981,7 +3986,7 @@ public  class Documentador implements MySqlParserListener {
 
     @Override
     public void enterSimpleAuthOption(MySqlParser.SimpleAuthOptionContext ctx) {
-
+        System.out.print(ctx.userName().getText());
     }
 
     @Override

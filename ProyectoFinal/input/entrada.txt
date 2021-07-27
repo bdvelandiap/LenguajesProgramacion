@@ -1,2 +1,4 @@
 PURGE BINARY LOGS TO 'mysql-bin.010';
 PURGE BINARY LOGS BEFORE '2019-04-02 22:46:26';
+
+CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';
