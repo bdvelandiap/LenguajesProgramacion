@@ -17,11 +17,17 @@ public  class Documentador implements MySqlParserListener {
         int selects = 0;
         int inserts = 0;
         int delets = 0;
+        int purge_logs = 0;
+        int alter_user = 0;
         for(int i=0; i<ctx.getChild(0).getChildCount(); i++){
             try{
                 //System.out.println(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString());
                 if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[687 669 646 638]")){
                     tablas++;
+                }
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[774 674 646 638]")
+                ||ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[774 674 659 638]")){
+                    alter_user++;
                 }
                 if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[709 669 646 638]")){
                     drop_table++;
@@ -43,6 +49,9 @@ public  class Documentador implements MySqlParserListener {
                         ||ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[720 670 659 638]")
                 ){
                     delets++;
+                }
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[742 672 646 638]")){
+                    purge_logs++;
                 }
             }catch(Exception e){
 
@@ -88,6 +97,20 @@ public  class Documentador implements MySqlParserListener {
                 System.out.println("SE HACE 1 DELETE");
             }else{
                 System.out.println("SE HACEN UN TOTAL DE "+delets+" DELETES");
+            }
+        }
+        if(alter_user > 0){
+            if(alter_user == 1){
+                System.out.println("SE HACE 1 SENTENCIA DE ALTER USER");
+            }else{
+                System.out.println("SE HACEN UN TOTAL DE "+alter_user+" SENTENCIAS DE ALTER USER");
+            }
+        }
+        if(purge_logs > 0){
+            if(purge_logs == 1){
+                System.out.println("SE HACE 1 SENTENCIA DE PURGE BINARY LOGS");
+            }else{
+                System.out.println("SE HACEN UN TOTAL DE "+purge_logs+" SENTENCIAS DE PURGE BINARY LOGS");
             }
         }
         System.out.println("\n***********DOCUMENTACIÓN DETALLADA************\n");
