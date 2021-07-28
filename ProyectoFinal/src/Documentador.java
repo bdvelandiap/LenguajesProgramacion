@@ -1,3 +1,4 @@
+import com.sun.media.sound.SoftTuning;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
@@ -119,7 +120,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void exitRoot(MySqlParser.RootContext ctx) {
-        System.out.println("\ndocumentacion hecha por.....");
+        System.out.println("\n***********ANÁLISIS FINALIZADO****************");
     }
 
     @Override
@@ -158,7 +159,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDdlStatement(MySqlParser.DdlStatementContext ctx) {
-        System.out.print("[DDL]");
+        System.out.print("[DDL] ");
     }
 
     @Override
@@ -168,7 +169,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDmlStatement(MySqlParser.DmlStatementContext ctx) {
-        System.out.print("[DML]");
+        System.out.print("[DML] ");
     }
 
     @Override
@@ -198,7 +199,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterPreparedStatement(MySqlParser.PreparedStatementContext ctx) {
-        System.out.print("[PREPARED]");
+        System.out.print("[PREPARED] ");
     }
 
     @Override
@@ -208,7 +209,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterCompoundStatement(MySqlParser.CompoundStatementContext ctx) {
-        System.out.print("[COMPOUND]");
+        System.out.print("[COMPOUND] ");
     }
 
     @Override
@@ -228,7 +229,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterUtilityStatement(MySqlParser.UtilityStatementContext ctx) {
-        System.out.print("[UTILITY]");
+        System.out.print("[UTILITY] ");
     }
 
     @Override
@@ -936,7 +937,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterTableOptionAutoIncrement(MySqlParser.TableOptionAutoIncrementContext ctx) {
-
+        System.out.println(": SE FIJA " + ctx.getText());
     }
 
     @Override
@@ -2116,7 +2117,11 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterDropTable(MySqlParser.DropTableContext ctx) {
-
+        System.out.println("SE ELIMINA LA TABLA: " + ctx.tables().getText());
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -2197,6 +2202,12 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterTruncateTable(MySqlParser.TruncateTableContext ctx) {
+        System.out.println("SE VACIA LA TABLA: " + ctx.tableName().getText());
+
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
 
     }
 
@@ -2247,26 +2258,22 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterInsertStatement(MySqlParser.InsertStatementContext ctx) {
-        //System.out.print("SE INSERTA LINEA, CAMPOS: ");
-        /*for(int i = 0; i <= ctx.;i++){
-
-            System.out.println(i);
-            walker.walk(new Documentador(), ctx.uidList(i));
-        }*/
-        /*walker.walk(new Documentador(), ctx.tableName());
-        System.out.print(",CON IDENTIFICADOR: ");
-        System.out.print(ctx.getChild(6).getText()) ;
-        System.out.print(",OPCIONES:( ");
-        for(int j =0;j<ctx.serverOption().size();j++) {
-            walker.walk(new Documentador(), ctx.serverOption(j));
-            if(j<ctx.serverOption().size()-1){
-                System.out.print(",");
+        System.out.print("SE INSERTA LINEA EN BASE DE DATOS: " + ctx.tableName().getText() +  ". CAMPOS A INSERTAR: ");
+        for(int i = 0; i < ctx.columns.uid().size();i++){
+            System.out.print(ctx.columns.uid(i).getText());
+            if (i < ctx.columns.uid().size() - 1){
+                System.out.print(", ");
+            }else{
+                System.out.print(".");
             }
         }
+
+        walker.walk(new Documentador(), ctx.insertStatementValue());
+
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
-        }*/
+        }
     }
 
     @Override
@@ -2426,7 +2433,7 @@ public class Documentador implements MySqlParserListener {
             System.out.print("(se cuando no se este leyendo)");
         }
         System.out.print("DE LA TABLA: ");
-        walker.walk(new Documentador(), ctx.tableName());
+        System.out.print(ctx.tableName().getText());
         System.out.print(" DONDE ");
         walker.walk(new Documentador(), ctx.expression());
         int childs = ctx.getChildCount();
@@ -2497,12 +2504,14 @@ public class Documentador implements MySqlParserListener {
             System.out.print("(se cuando no se este leyendo)");
         }
         System.out.print("LA TABLA: ");
-        walker.walk(new Documentador(), ctx.tableName());
+        System.out.print(ctx.tableName().getText());
         System.out.print(", DONDE: ");
         for(int j =0;j<ctx.updatedElement().size();j++) {
-            walker.walk(new Documentador(), ctx.updatedElement(j));
+            System.out.print(ctx.updatedElement(j).getText());
             if(j<ctx.updatedElement().size()-1){
-                System.out.print(",");
+                System.out.print(", ");
+            }else{
+                System.out.println(".");
             }
         }
         int childs = ctx.getChildCount();
@@ -2879,8 +2888,19 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterFromClause(MySqlParser.FromClauseContext ctx) {
-        System.out.print(", DE :");
-        walker.walk(new Documentador(), ctx.tableSources());
+        System.out.print(", DE: ");
+        for (int i = 0; i < ctx.tableSources().tableSource().size(); i++) {
+            System.out.print(ctx.tableSources().tableSource(i).getText());
+            if (i < ctx.tableSources().tableSource().size() - 1){
+                System.out.print(", ");
+            }else{
+                System.out.print(".");
+            }
+        }
+
+        if(ctx.whereExpr != null) {
+            System.out.println(" CUANDO SE CUMPLA: " + ctx.whereExpr.getText() + ".");
+        }
         int childs = ctx.getChildCount();
         for(int i =0; i < childs; i++){
             ctx.removeLastChild();
@@ -4739,6 +4759,11 @@ public class Documentador implements MySqlParserListener {
     @Override
     public void enterUseStatement(MySqlParser.UseStatementContext ctx) {
         System.out.print("SE LE INDICA A MYSQL USAR LA BASE DE DATOS: "+ctx.uid().getText()+" PARA LAS SIGUIENTES SENTENCIAS.");
+
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }
     }
 
     @Override
@@ -5252,15 +5277,20 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) {
-        System.out.print(" TP: "+ ctx.expressionOrDefault().size());
-        for(int i = 0; i < ctx.expressionOrDefault().size();i++){
-            System.out.print("   ->   ");
-            System.out.print(ctx.expressionOrDefault(i));
-            System.out.print("; ." + i + ".");
-            /*if(i < ctx.expressionOrDefault().size()-1) {
-                System.out.println(", ");
-            }*/
 
+        System.out.print(" VALORES: ");
+        for(int i = 0; i < ctx.expressionOrDefault().size();i++){
+            System.out.print(ctx.expressionOrDefault(i).getText());
+            if (i < ctx.expressionOrDefault().size() - 1){
+                System.out.print(", ");
+            }else{
+                System.out.print(".");
+            }
+        }
+
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
         }
     }
 
@@ -5346,7 +5376,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterIfNotExists(MySqlParser.IfNotExistsContext ctx) {
-        System.out.print("(si no existe)");
+        System.out.print(" (si no existe) ");
     }
 
     @Override
