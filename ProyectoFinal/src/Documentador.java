@@ -19,6 +19,7 @@ public  class Documentador implements MySqlParserListener {
         int delets = 0;
         int purge_logs = 0;
         int alter_user = 0;
+        int truncate = 0;
         for(int i=0; i<ctx.getChild(0).getChildCount(); i++){
             try{
                 //System.out.println(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString());
@@ -29,8 +30,11 @@ public  class Documentador implements MySqlParserListener {
                 ||ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[774 674 659 638]")){
                     alter_user++;
                 }
-                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[709 669 646 638]")){
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[709 669 646 638]") || ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[709 669 659 638]")){
                     drop_table++;
+                }
+                if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[714 669 646 638]") || ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[714 669 659 638]")){
+                    truncate++;
                 }
                 if(ctx.getChild(0).getChild(i).getChild(0).getChild(0).toString().equals("[680 669 646 638]")){
                     dbs++;
@@ -76,6 +80,13 @@ public  class Documentador implements MySqlParserListener {
                 System.out.println("SE HACE 1 DROP TABLE");
             }else{
                 System.out.println("SE HACEN UN TOTAL DE "+drop_table+" DROP TABLES");
+            }
+        }
+        if(truncate > 0){
+            if(truncate == 1){
+                System.out.println("SE HACE 1 VACIO DE TABLA");
+            }else{
+                System.out.println("SE HACEN UN TOTAL DE "+truncate+" VACIOS DE TABLAS");
             }
         }
         if(selects > 0){
