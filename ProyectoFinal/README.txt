@@ -4,4 +4,4 @@ Manual de uso documentador MYSQL
 3.La entrada del programa esta ubicada en la carpet "input" en el archivo "entrada.txt"
 4.Para ejecutar el programa click derecho en "main.java" en la carpeta "src" y luego click en "Run.Main.main()"
 
-En la carpeta de Ejemplos se encuentran vario script para probar la herramienta.
+En la carpeta de Ejemplos se encuentran varioS scriptS para probar la herramienta.
