@@ -2144,9 +2144,27 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterInsertStatement(MySqlParser.InsertStatementContext ctx) {
-        
-    }
+        //System.out.print("SE INSERTA LINEA, CAMPOS: ");
+        /*for(int i = 0; i <= ctx.;i++){
 
+            System.out.println(i);
+            walker.walk(new Documentador(), ctx.uidList(i));
+        }*/
+        /*walker.walk(new Documentador(), ctx.tableName());
+        System.out.print(",CON IDENTIFICADOR: ");
+        System.out.print(ctx.getChild(6).getText()) ;
+        System.out.print(",OPCIONES:( ");
+        for(int j =0;j<ctx.serverOption().size();j++) {
+            walker.walk(new Documentador(), ctx.serverOption(j));
+            if(j<ctx.serverOption().size()-1){
+                System.out.print(",");
+            }
+        }
+        int childs = ctx.getChildCount();
+        for(int i =0; i < childs; i++){
+            ctx.removeLastChild();
+        }*/
+    }
 
     @Override
     public void exitInsertStatement(MySqlParser.InsertStatementContext ctx) {
@@ -4970,7 +4988,16 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) {
+        System.out.print(" TP: "+ ctx.expressionOrDefault().size());
+        for(int i = 0; i < ctx.expressionOrDefault().size();i++){
+            System.out.print("   ->   ");
+            System.out.print(ctx.expressionOrDefault(i));
+            System.out.print("; ." + i + ".");
+            /*if(i < ctx.expressionOrDefault().size()-1) {
+                System.out.println(", ");
+            }*/
 
+        }
     }
 
     @Override
@@ -5030,7 +5057,7 @@ public class Documentador implements MySqlParserListener {
 
     @Override
     public void enterExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) {
-
+        //System.out.println("expresion or default");
     }
 
     @Override
